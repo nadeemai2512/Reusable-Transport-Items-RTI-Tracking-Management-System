@@ -1,0 +1,169 @@
+<mvc:View controllerName="rti.app.controller.Dashboard" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+  xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"
+  xmlns:viz="sap.viz.ui5.controls" xmlns:viz.data="sap.viz.ui5.data" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
+  <Page id="page" title="Logistics Control Tower" busyIndicatorDelay="0">
+    <headerContent>
+      <Button icon="sap-icon://refresh" press=".onRefresh" tooltip="Reload"/>
+    </headerContent>
+    <content>
+      <MessageStrip text="{view>/error}" type="Error" showIcon="true" visible="{= !!${view>/error}}" class="sapUiSmallMargin"/>
+
+      <l:HorizontalLayout allowWrapping="true" class="sapUiSmallMarginBeginEnd">
+        <GenericTile class="rtiKpiTile" header="Total owned assets" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="inventory"/></customData>
+          <TileContent unit="units"><NumericContent value="{dash>/totalOwned}" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Available" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="inventory"/></customData>
+          <TileContent unit="net units"><NumericContent value="{dash>/available}" valueColor="Good" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="At customers" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="dispatches"/><core:CustomData key="filter" value="open"/></customData>
+          <TileContent unit="units"><NumericContent value="{dash>/atCustomer}" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Overdue dispatches" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="dispatches"/><core:CustomData key="filter" value="overdue"/></customData>
+          <TileContent unit="dispatches"><NumericContent value="{dash>/overdueDispatches}" valueColor="Critical" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Presumed lost" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="dispatches"/><core:CustomData key="filter" value="presumed"/></customData>
+          <TileContent unit="units"><NumericContent value="{dash>/presumedLostQty}" valueColor="Error" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Damaged / repair" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="inventory"/></customData>
+          <TileContent unit="units"><NumericContent value="{dash>/damaged}" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Net penalties (INR)" press=".onTile" frameType="OneByOne" visible="{me>/can/penalties}">
+          <customData><core:CustomData key="route" value="penalties"/></customData>
+          <TileContent><NumericContent value="{path:'dash>/totalPenalty', formatter:'.formatMoney'}" valueColor="Critical" withMargin="false" truncateValueTo="8"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Pending waivers" press=".onTile" frameType="OneByOne" visible="{me>/can/penalties}">
+          <customData><core:CustomData key="route" value="waivers"/></customData>
+          <TileContent unit="requests"><NumericContent value="{dash>/pendingWaivers}" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Replenishment alerts" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="inventory"/><core:CustomData key="tab" value="alerts"/></customData>
+          <TileContent unit="locations"><NumericContent value="{dash>/replenishmentAlerts}" valueColor="Critical" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Today's dispatches" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="dispatches"/><core:CustomData key="filter" value="today"/></customData>
+          <TileContent unit="units"><NumericContent value="{dash>/todaysDispatches}" withMargin="false"/></TileContent>
+        </GenericTile>
+        <GenericTile class="rtiKpiTile" header="Today's returns" press=".onTile" frameType="OneByOne">
+          <customData><core:CustomData key="route" value="returns"/></customData>
+          <TileContent unit="units"><NumericContent value="{dash>/todaysReturns}" withMargin="false"/></TileContent>
+        </GenericTile>
+      </l:HorizontalLayout>
+
+      <l:Grid defaultSpan="XL6 L6 M12 S12" class="sapUiSmallMarginTop">
+        <Panel headerText="Asset distribution by status" class="rtiChartPanel">
+          <viz:VizFrame id="statusChart" vizType="donut" width="100%" height="300px" uiConfig="{applicationSet:'fiori'}"
+            vizProperties="{title:{visible:false}}">
+            <viz:dataset>
+              <viz.data:FlattenedDataset data="{dash>/statusDist}">
+                <viz.data:dimensions><viz.data:DimensionDefinition name="Status" value="{dash>label}"/></viz.data:dimensions>
+                <viz.data:measures><viz.data:MeasureDefinition name="Units" value="{dash>count}"/></viz.data:measures>
+              </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+              <viz.feeds:FeedItem uid="size" type="Measure" values="Units"/>
+              <viz.feeds:FeedItem uid="color" type="Dimension" values="Status"/>
+            </viz:feeds>
+          </viz:VizFrame>
+        </Panel>
+        <Panel headerText="Aging buckets (outstanding units by days retained)" class="rtiChartPanel">
+          <viz:VizFrame id="agingChart" vizType="column" width="100%" height="300px" uiConfig="{applicationSet:'fiori'}"
+            vizProperties="{title:{visible:false}}">
+            <viz:dataset>
+              <viz.data:FlattenedDataset data="{dash>/aging}">
+                <viz.data:dimensions><viz.data:DimensionDefinition name="Bucket" value="{dash>label}"/></viz.data:dimensions>
+                <viz.data:measures><viz.data:MeasureDefinition name="Outstanding" value="{dash>count}"/></viz.data:measures>
+              </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+              <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Outstanding"/>
+              <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Bucket"/>
+            </viz:feeds>
+          </viz:VizFrame>
+        </Panel>
+        <Panel headerText="Top overdue customers (outstanding units)" class="rtiChartPanel">
+          <viz:VizFrame id="overdueChart" vizType="bar" width="100%" height="300px" uiConfig="{applicationSet:'fiori'}"
+            vizProperties="{title:{visible:false}}">
+            <viz:dataset>
+              <viz.data:FlattenedDataset data="{dash>/topOverdue}">
+                <viz.data:dimensions><viz.data:DimensionDefinition name="Customer" value="{dash>label}"/></viz.data:dimensions>
+                <viz.data:measures><viz.data:MeasureDefinition name="Outstanding" value="{dash>count}"/></viz.data:measures>
+              </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+              <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Outstanding"/>
+              <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Customer"/>
+            </viz:feeds>
+          </viz:VizFrame>
+        </Panel>
+        <Panel headerText="Monthly dispatch vs return (units)" class="rtiChartPanel">
+          <viz:VizFrame id="trendChart" vizType="column" width="100%" height="300px" uiConfig="{applicationSet:'fiori'}"
+            vizProperties="{title:{visible:false}}">
+            <viz:dataset>
+              <viz.data:FlattenedDataset data="{dash>/monthly}">
+                <viz.data:dimensions><viz.data:DimensionDefinition name="Month" value="{dash>label}"/></viz.data:dimensions>
+                <viz.data:measures>
+                  <viz.data:MeasureDefinition name="Dispatched" value="{dash>dispatched}"/>
+                  <viz.data:MeasureDefinition name="Returned" value="{dash>returned}"/>
+                </viz.data:measures>
+              </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+              <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Dispatched,Returned"/>
+              <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Month"/>
+            </viz:feeds>
+          </viz:VizFrame>
+        </Panel>
+      </l:Grid>
+
+      <Panel headerText="Customers above damage-rate threshold (rolling 90 days)" class="rtiChartPanel">
+        <Table items="{dash>/highDamageCustomers}" noDataText="No customer exceeds the damage-rate threshold">
+          <columns><Column><Text text="Customer"/></Column><Column hAlign="End"><Text text="Returned units (90d)"/></Column><Column hAlign="End"><Text text="Damage rate %"/></Column></columns>
+          <items><ColumnListItem><cells><Text text="{dash>label}"/><ObjectNumber number="{dash>count}"/><ObjectNumber number="{dash>amount}" state="Error"/></cells></ColumnListItem></items>
+        </Table>
+      </Panel>
+
+      <Panel headerText="Recent dispatches" class="rtiChartPanel">
+        <Table id="recentDispatches" growing="true" growingThreshold="5" noDataText="No dispatches yet"
+          items="{path:'/Dispatches', parameters:{$orderby:'createdAt desc'}}">
+          <columns>
+            <Column><Text text="Dispatch"/></Column><Column><Text text="Date"/></Column><Column><Text text="Customer"/></Column>
+            <Column><Text text="Asset type"/></Column><Column hAlign="End"><Text text="Outstanding"/></Column><Column><Text text="Status"/></Column>
+          </columns>
+          <items>
+            <ColumnListItem type="Navigation" press=".onOpenDispatch">
+              <cells>
+                <ObjectIdentifier title="{dispatchNo}"/><Text text="{dispatchDate}"/><Text text="{customer/name}"/><Text text="{assetType/name}"/>
+                <ObjectNumber number="{outstanding}"/>
+                <ObjectStatus text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+      </Panel>
+
+      <Panel headerText="Recent returns" class="rtiChartPanel">
+        <Table id="recentReturns" growing="true" growingThreshold="5" noDataText="No returns yet"
+          items="{path:'/Returns', parameters:{$orderby:'createdAt desc'}}">
+          <columns>
+            <Column><Text text="Return"/></Column><Column><Text text="Date"/></Column><Column><Text text="Customer"/></Column>
+            <Column hAlign="End"><Text text="Qty"/></Column><Column><Text text="Condition"/></Column>
+          </columns>
+          <items>
+            <ColumnListItem>
+              <cells>
+                <ObjectIdentifier title="{returnNo}"/><Text text="{returnDate}"/><Text text="{customer/name}"/><ObjectNumber number="{quantity}"/>
+                <ObjectStatus text="{path:'condition', formatter:'.formatter.label'}" state="{path:'condition', formatter:'.formatter.state'}"/>
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+      </Panel>
+    </content>
+  </Page>
+</mvc:View>

@@ -1,0 +1,29 @@
+<mvc:View controllerName="rti.app.controller.Ledger" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Movement Ledger &amp; Audit Trail" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <IconTabBar id="tabs" expandable="false" applyContentPadding="false" select=".onTabSelect">
+        <items>
+          <IconTabFilter key="ledger" text="Movement ledger" icon="sap-icon://history">
+            <Table id="t_ledger" growing="true" growingThreshold="30" noDataText="No movements"
+              items="{path:'/MovementLedger', parameters:{$orderby:'movementDate desc'}}">
+              <columns><Column><Text text="Date/time"/></Column><Column><Text text="Type"/></Column><Column><Text text="Asset type"/></Column><Column><Text text="Serial"/></Column><Column><Text text="Warehouse"/></Column><Column><Text text="Customer"/></Column><Column hAlign="End"><Text text="Qty"/></Column><Column><Text text="Reference"/></Column></columns>
+              <items><ColumnListItem><cells>
+                <Text text="{movementDate}"/><ObjectStatus text="{path:'type', formatter:'.formatter.label'}"/><Text text="{assetType/name}"/><Text text="{asset/serialNo}"/>
+                <Text text="{warehouse/name}"/><Text text="{customer/name}"/><ObjectNumber number="{quantity}"/><Text text="{reference}"/>
+              </cells></ColumnListItem></items>
+            </Table>
+          </IconTabFilter>
+          <IconTabFilter key="audit" text="Audit log" icon="sap-icon://activity-items" visible="{me>/can/audit}">
+            <Table id="t_audit" growing="true" growingThreshold="30" noDataText="No audit records"
+              items="{path:'/AuditLogs', suspended:true, parameters:{$orderby:'createdAt desc'}}">
+              <columns><Column><Text text="Time"/></Column><Column><Text text="User"/></Column><Column><Text text="Action"/></Column><Column><Text text="Entity"/></Column><Column><Text text="Entity ID"/></Column><Column><Text text="New value"/></Column><Column><Text text="Comments"/></Column></columns>
+              <items><ColumnListItem><cells>
+                <Text text="{createdAt}"/><Text text="{userId}"/><ObjectStatus text="{path:'action', formatter:'.formatter.label'}"/><Text text="{entityType}"/><Text text="{entityId}"/><Text text="{newValue}"/><Text text="{comments}"/>
+              </cells></ColumnListItem></items>
+            </Table>
+          </IconTabFilter>
+        </items>
+      </IconTabBar>
+    </content>
+  </Page>
+</mvc:View>

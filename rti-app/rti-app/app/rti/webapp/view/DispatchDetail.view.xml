@@ -1,0 +1,42 @@
+<mvc:View controllerName="rti.app.controller.DispatchDetail" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+  xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
+  <Page id="page" title="Dispatch {dispatchNo}" showNavButton="true" navButtonPress=".onBack" busyIndicatorDelay="0">
+    <headerContent>
+      <Button text="Register Return" icon="sap-icon://undo" type="Emphasized" press=".onReturn" visible="{= ${me>/can/dispatch} &amp;&amp; ${status} !== 'CLOSED'}"/>
+      <Button icon="sap-icon://refresh" press=".onRefresh"/>
+    </headerContent>
+    <content>
+      <ObjectHeader title="{dispatchNo} - {customer/name}" number="{outstanding}" numberUnit="units outstanding"
+        numberState="{= ${outstanding} > 0 ? 'Warning' : 'Success'}">
+        <statuses>
+          <ObjectStatus title="Status" text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+        </statuses>
+        <attributes>
+          <ObjectAttribute title="Asset type" text="{assetType/name}"/>
+          <ObjectAttribute title="Warehouse" text="{warehouse/name}"/>
+        </attributes>
+      </ObjectHeader>
+      <f:SimpleForm editable="false" layout="ResponsiveGridLayout" columnsL="2" columnsM="2" title="Details">
+        <Label text="Dispatch date"/><Text text="{dispatchDate}"/>
+        <Label text="Grace days"/><Text text="{graceDays}"/>
+        <Label text="Grace period ends"/><Text text="{graceEndDate}"/>
+        <Label text="Expected return"/><Text text="{expectedReturnDate}"/>
+        <Label text="Quantity / returned"/><Text text="{quantity} / {returnedQuantity}"/>
+        <Label text="Serial no."/><Text text="{asset/serialNo}"/>
+        <Label text="Carrier"/><Text text="{carrier}"/>
+        <Label text="S/4 delivery / shipment"/><Text text="{deliveryNo} {shipmentNo}"/>
+        <Label text="Remarks"/><Text text="{remarks}"/>
+      </f:SimpleForm>
+      <Panel headerText="Returns against this dispatch" class="rtiChartPanel">
+        <Table id="returns" noDataText="No returns yet" items="{path:'/Returns', suspended:true, parameters:{$orderby:'returnDate desc'}}">
+          <columns><Column><Text text="Return"/></Column><Column><Text text="Date"/></Column><Column hAlign="End"><Text text="Qty"/></Column><Column><Text text="Condition"/></Column><Column><Text text="Remarks"/></Column></columns>
+          <items><ColumnListItem><cells>
+            <ObjectIdentifier title="{returnNo}"/><Text text="{returnDate}"/><ObjectNumber number="{quantity}"/>
+            <ObjectStatus text="{path:'condition', formatter:'.formatter.label'}" state="{path:'condition', formatter:'.formatter.state'}"/>
+            <Text text="{remarks}"/>
+          </cells></ColumnListItem></items>
+        </Table>
+      </Panel>
+    </content>
+  </Page>
+</mvc:View>

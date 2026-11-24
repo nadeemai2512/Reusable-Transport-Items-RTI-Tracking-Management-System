@@ -1,0 +1,55 @@
+<mvc:View controllerName="rti.app.controller.Dispatches" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Outbound Dispatches" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <Table id="table" growing="true" growingThreshold="20" sticky="ColumnHeaders,HeaderToolbar" mode="None"
+        noDataText="No dispatches match the current filter"
+        items="{path:'/Dispatches', parameters:{$orderby:'dispatchDate desc,dispatchNo desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Dispatches" level="H2"/>
+            <ObjectStatus text="{view>/filterText}" state="Information" visible="{= !!${view>/filterText}}"/>
+            <ToolbarSpacer/>
+            <Select id="statusFilter" change=".onFilter" width="12rem">
+              <core:Item xmlns:core="sap.ui.core" key="" text="All statuses"/>
+              <core:Item xmlns:core="sap.ui.core" key="OPEN" text="Open"/>
+              <core:Item xmlns:core="sap.ui.core" key="PARTIALLY_RETURNED" text="Partially returned"/>
+              <core:Item xmlns:core="sap.ui.core" key="PRESUMED_LOST" text="Presumed lost"/>
+              <core:Item xmlns:core="sap.ui.core" key="CLOSED" text="Closed"/>
+            </Select>
+            <SearchField width="14rem" placeholder="Dispatch no. / customer" search=".onFilter" liveChange=".onFilter" id="search"/>
+            <Button icon="sap-icon://add" text="New Dispatch" type="Emphasized" press=".onNew" visible="{me>/can/dispatch}"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh" tooltip="Reload"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Dispatch"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Date"/></Column>
+          <Column><Text text="Customer"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Asset type"/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Serial"/></Column>
+          <Column hAlign="End"><Text text="Qty"/></Column>
+          <Column hAlign="End" minScreenWidth="Tablet" demandPopin="true"><Text text="Returned"/></Column>
+          <Column hAlign="End"><Text text="Outstanding"/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Grace ends"/></Column>
+          <Column><Text text="Status"/></Column>
+        </columns>
+        <items>
+          <ColumnListItem type="Navigation" press=".onOpen">
+            <cells>
+              <ObjectIdentifier title="{dispatchNo}" text="{deliveryNo}"/>
+              <Text text="{dispatchDate}"/>
+              <Text text="{customer/name}"/>
+              <Text text="{assetType/name}"/>
+              <Text text="{asset/serialNo}"/>
+              <ObjectNumber number="{quantity}"/>
+              <ObjectNumber number="{returnedQuantity}"/>
+              <ObjectNumber number="{outstanding}"/>
+              <Text text="{graceEndDate}"/>
+              <ObjectStatus text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

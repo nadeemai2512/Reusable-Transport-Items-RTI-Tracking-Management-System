@@ -1,0 +1,2 @@
+ID,dispatchNo,dispatchDate,customer_ID,warehouse_ID,assetType_ID,asset_ID,quantity,returnedQuantity,graceDays,graceEndDate,expectedReturnDate,carrier,deliveryNo,shipmentNo,status,remarks
+77777777-0000-0000-0000-000000000001,DSP-00001,2026-10-10,22222222-0000-0000-0000-000000000001,33333333-0000-0000-0000-000000000001,11111111-0000-0000-0000-000000000001,,100,0,30,2026-11-09,2026-11-09,BlueDart Logistics,80001234,,OPEN,Seed dispatch

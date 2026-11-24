@@ -1,0 +1,42 @@
+<mvc:View controllerName="rti.app.controller.Returns" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Inbound Returns" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <Table id="table" growing="true" growingThreshold="20" sticky="ColumnHeaders,HeaderToolbar" noDataText="No returns recorded"
+        items="{path:'/Returns', parameters:{$orderby:'returnDate desc,returnNo desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Returns" level="H2"/>
+            <ToolbarSpacer/>
+            <SearchField id="search" width="14rem" placeholder="Return no. / customer" search=".onSearch" liveChange=".onSearch"/>
+            <Button icon="sap-icon://add" text="Register Return" type="Emphasized" press=".onNew" visible="{me>/can/dispatch}"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Return"/></Column>
+          <Column><Text text="Date"/></Column>
+          <Column><Text text="Dispatch"/></Column>
+          <Column><Text text="Customer"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Asset type"/></Column>
+          <Column hAlign="End"><Text text="Qty"/></Column>
+          <Column><Text text="Inspection"/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Remarks"/></Column>
+        </columns>
+        <items>
+          <ColumnListItem>
+            <cells>
+              <ObjectIdentifier title="{returnNo}"/>
+              <Text text="{returnDate}"/>
+              <Link text="{dispatch/dispatchNo}" press=".onOpenDispatch"/>
+              <Text text="{customer/name}"/>
+              <Text text="{assetType/name}"/>
+              <ObjectNumber number="{quantity}"/>
+              <ObjectStatus text="{path:'condition', formatter:'.formatter.label'}" state="{path:'condition', formatter:'.formatter.state'}"/>
+              <Text text="{remarks}"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

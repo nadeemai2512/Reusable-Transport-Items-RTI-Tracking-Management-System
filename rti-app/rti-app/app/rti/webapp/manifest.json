@@ -1,0 +1,81 @@
+{
+  "_version": "1.60.0",
+  "sap.app": {
+    "id": "rti.app",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": { "version": "1.0.0" },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/rti/",
+        "type": "OData",
+        "settings": { "odataVersion": "4.0" }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "rootView": { "viewName": "rti.app.view.App", "type": "XML", "id": "app", "async": true },
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {}, "sap.ui.core": {}, "sap.ui.layout": {}, "sap.tnt": {}, "sap.viz": {},
+        "sap.ndc": { "lazy": true }
+      }
+    },
+    "contentDensities": { "compact": true, "cozy": true },
+    "models": {
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true,
+          "groupId": "$auto",
+          "updateGroupId": "$auto",
+          "groupProperties": { "rtiGroup": { "submit": "API" } }
+        }
+      }
+    },
+    "resources": { "css": [ { "uri": "css/style.css" } ] },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "rti.app.view",
+        "controlId": "pageContainer",
+        "controlAggregation": "pages",
+        "transition": "slide",
+        "async": true
+      },
+      "routes": [
+        { "name": "dashboard",      "pattern": "",                    "target": "dashboard" },
+        { "name": "masterdata",     "pattern": "masterdata",          "target": "masterdata" },
+        { "name": "dispatches",     "pattern": "dispatches:?query:",  "target": "dispatches" },
+        { "name": "dispatchDetail", "pattern": "dispatches/{id}",     "target": "dispatchDetail" },
+        { "name": "returns",        "pattern": "returns",             "target": "returns" },
+        { "name": "penalties",      "pattern": "penalties",           "target": "penalties" },
+        { "name": "waivers",        "pattern": "waivers",             "target": "waivers" },
+        { "name": "inventory",      "pattern": "inventory:?query:",   "target": "inventory" },
+        { "name": "ledger",         "pattern": "ledger",              "target": "ledger" }
+      ],
+      "targets": {
+        "dashboard":      { "viewName": "Dashboard",      "viewId": "dashboard",      "viewLevel": 1 },
+        "masterdata":     { "viewName": "MasterData",     "viewId": "masterdata",     "viewLevel": 1 },
+        "dispatches":     { "viewName": "Dispatches",     "viewId": "dispatches",     "viewLevel": 1 },
+        "dispatchDetail": { "viewName": "DispatchDetail", "viewId": "dispatchDetail", "viewLevel": 2 },
+        "returns":        { "viewName": "Returns",        "viewId": "returns",        "viewLevel": 1 },
+        "penalties":      { "viewName": "Penalties",      "viewId": "penalties",      "viewLevel": 1 },
+        "waivers":        { "viewName": "Waivers",        "viewId": "waivers",        "viewLevel": 1 },
+        "inventory":      { "viewName": "Inventory",      "viewId": "inventory",      "viewLevel": 1 },
+        "ledger":         { "viewName": "Ledger",         "viewId": "ledger",         "viewLevel": 1 }
+      }
+    }
+  }
+}
