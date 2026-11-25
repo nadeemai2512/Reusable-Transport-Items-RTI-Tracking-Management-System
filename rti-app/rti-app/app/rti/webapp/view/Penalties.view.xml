@@ -1,0 +1,52 @@
+<mvc:View controllerName="rti.app.controller.Penalties" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Demurrage &amp; Penalties" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <MessageStrip showIcon="true" type="Information"
+        text="Penalty = demurrage on outstanding units for overdue days 1-30 (slabs from Penalty Policies) + full replacement charge once overdue exceeds the presumed-lost threshold. Day 1 is the first day after dispatch date + grace days. Original penalties are never edited; waivers are separate transactions."/>
+      <Table id="table" growing="true" growingThreshold="20" sticky="ColumnHeaders,HeaderToolbar" noDataText="No penalties accrued yet - run the penalty engine"
+        items="{path:'/PenaltyTransactions', parameters:{$orderby:'netPayable desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Penalty transactions (INR)" level="H2"/>
+            <ToolbarSpacer/>
+            <SearchField id="search" width="14rem" placeholder="Customer / dispatch" search=".onSearch" liveChange=".onSearch"/>
+            <Button text="Run penalty engine" icon="sap-icon://play" press=".onRun" visible="{me>/can/runEngine}"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Dispatch"/></Column>
+          <Column><Text text="Customer"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Asset type"/></Column>
+          <Column hAlign="End"><Text text="Outstanding"/></Column>
+          <Column hAlign="End"><Text text="Days overdue"/></Column>
+          <Column hAlign="End"><Text text="Demurrage"/></Column>
+          <Column hAlign="End"><Text text="Replacement"/></Column>
+          <Column hAlign="End"><Text text="Waived"/></Column>
+          <Column hAlign="End"><Text text="Net payable"/></Column>
+          <Column><Text text="Status"/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Calculated on"/></Column>
+          <Column width="9rem"><Text text=""/></Column>
+        </columns>
+        <items>
+          <ColumnListItem>
+            <cells>
+              <Link text="{dispatch/dispatchNo}" press=".onOpenDispatch"/>
+              <Text text="{customer/name}"/>
+              <Text text="{assetType/name}"/>
+              <ObjectNumber number="{outstandingQty}"/>
+              <ObjectNumber number="{overdueDays}" state="{= ${overdueDays} > 30 ? 'Error' : 'Warning'}"/>
+              <ObjectNumber number="{accruedDemurrage}"/>
+              <ObjectNumber number="{replacementCharge}"/>
+              <ObjectNumber number="{waivedAmount}"/>
+              <ObjectNumber number="{netPayable}" state="Error"/>
+              <ObjectStatus text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+              <Text text="{calculatedOn}"/>
+              <Button text="Request waiver" icon="sap-icon://offsite-work" press=".onWaiver" visible="{= ${me>/can/waiverRequest} &amp;&amp; ${netPayable} > 0}"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

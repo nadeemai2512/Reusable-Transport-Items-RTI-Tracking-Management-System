@@ -1,0 +1,58 @@
+<mvc:View controllerName="rti.app.controller.Repair" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core">
+  <Page id="page" title="Damaged Asset &amp; Repair Management" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <MessageStrip showIcon="true" type="Information"
+        text="Repair orders pull damaged assets out of circulation, track vendor repairs, and return them to available stock (or write them off). Completing a repair moves the quantity back from damaged to available; scrapping moves it to scrapped."/>
+      <Table id="table" growing="true" growingThreshold="30" sticky="ColumnHeaders,HeaderToolbar" noDataText="No repair orders"
+        items="{path:'/RepairOrders', parameters:{$orderby:'damagedOn desc,repairNo desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Repair orders" level="H2"/>
+            <ToolbarSpacer/>
+            <Select id="statusFilter" change=".onFilter" width="14rem">
+              <core:Item key="" text="All statuses"/>
+              <core:Item key="OPEN" text="Open"/>
+              <core:Item key="IN_REPAIR" text="In repair"/>
+              <core:Item key="COMPLETED" text="Completed"/>
+              <core:Item key="SCRAPPED" text="Scrapped"/>
+            </Select>
+            <SearchField id="search" width="14rem" placeholder="Repair no. / asset serial" search=".onSearch" liveChange=".onSearch"/>
+            <Button icon="sap-icon://add" text="New Repair Order" type="Emphasized" press=".onNew" visible="{me>/can/dispatch}"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Repair no."/></Column>
+          <Column><Text text="Damaged on"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Asset type"/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Serial no."/></Column>
+          <Column><Text text="Warehouse"/></Column>
+          <Column hAlign="End"><Text text="Qty"/></Column>
+          <Column hAlign="End" minScreenWidth="Tablet" demandPopin="true"><Text text="Cost"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Vendor"/></Column>
+          <Column><Text text="Status"/></Column>
+          <Column width="9rem"><Text text=""/></Column>
+        </columns>
+        <items>
+          <ColumnListItem>
+            <cells>
+              <ObjectIdentifier title="{repairNo}"/>
+              <Text text="{damagedOn}"/>
+              <Text text="{assetType/name}"/>
+              <Text text="{asset/serialNo}"/>
+              <Text text="{warehouse/name}"/>
+              <ObjectNumber number="{quantity}"/>
+              <ObjectNumber number="{repairCost}"/>
+              <Text text="{vendor}"/>
+              <ObjectStatus text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+              <HBox visible="{me>/can/dispatch}">
+                <Button icon="sap-icon://accept" type="Accept" tooltip="Complete repair" press=".onComplete" visible="{= ${status} === 'OPEN' || ${status} === 'IN_REPAIR'}" class="sapUiTinyMarginEnd"/>
+                <Button icon="sap-icon://decline" type="Reject" tooltip="Scrap (write off)" press=".onScrap" visible="{= ${status} === 'OPEN' || ${status} === 'IN_REPAIR'}"/>
+              </HBox>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

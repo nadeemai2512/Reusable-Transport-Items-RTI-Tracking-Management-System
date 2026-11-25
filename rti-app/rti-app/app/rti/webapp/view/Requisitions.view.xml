@@ -1,0 +1,46 @@
+<mvc:View controllerName="rti.app.controller.Requisitions" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core">
+  <Page id="page" title="Purchase Requisitions" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <MessageStrip showIcon="true" type="Information"
+        text="Internal purchase requisitions for RTI replenishment. 'Post to S/4HANA' sends the PR to API_PURCHASEREQ_PROCESS_SRV via the configured destination; without a bound S/4 destination the posting is rejected with a clear error (never silently faked)."/>
+      <Table id="table" growing="true" growingThreshold="30" sticky="ColumnHeaders,HeaderToolbar" noDataText="No purchase requisitions"
+        items="{path:'/PurchaseRequisitions', parameters:{$orderby:'createdAt desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Purchase requisitions" level="H2"/>
+            <ToolbarSpacer/>
+            <SearchField id="search" width="14rem" placeholder="PR no. / asset type" search=".onSearch" liveChange=".onSearch"/>
+            <Button icon="sap-icon://add" text="New PR" type="Emphasized" press=".onNew" visible="{me>/can/stockEdit}"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="PR no."/></Column>
+          <Column><Text text="Asset type"/></Column>
+          <Column><Text text="Warehouse"/></Column>
+          <Column hAlign="End"><Text text="Qty"/></Column>
+          <Column hAlign="End" minScreenWidth="Tablet" demandPopin="true"><Text text="Unit price"/></Column>
+          <Column><Text text="Status"/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="S/4 PR no."/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Posting error"/></Column>
+          <Column width="9rem"><Text text=""/></Column>
+        </columns>
+        <items>
+          <ColumnListItem>
+            <cells>
+              <ObjectIdentifier title="{prNo}"/>
+              <Text text="{assetType/name}"/>
+              <Text text="{warehouse/name}"/>
+              <ObjectNumber number="{quantity}"/>
+              <ObjectNumber number="{unitPrice}"/>
+              <ObjectStatus text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+              <Text text="{s4PrNumber}"/>
+              <Text text="{s4PostingError}" maxLines="2"/>
+              <Button text="Post to S/4" icon="sap-icon://outbox" type="Emphasized" press=".onPost" visible="{= ${me>/can/stockEdit} &amp;&amp; ${status} !== 'CONVERTED' &amp;&amp; ${status} !== 'CANCELLED'}"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

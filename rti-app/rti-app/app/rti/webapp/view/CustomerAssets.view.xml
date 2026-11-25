@@ -1,0 +1,37 @@
+<mvc:View controllerName="rti.app.controller.CustomerAssets" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Customer Asset Balances" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <Table id="table" growing="true" growingThreshold="30" sticky="ColumnHeaders,HeaderToolbar" noDataText="No outstanding assets at customers"
+        items="{path:'/CustomerAssetBalances', parameters:{$orderby:'outstandingQty desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Outstanding RTI units at customers" level="H2"/>
+            <ToolbarSpacer/>
+            <SearchField id="search" width="16rem" placeholder="Customer / asset type" search=".onSearch" liveChange=".onSearch"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Customer"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Asset type"/></Column>
+          <Column hAlign="End"><Text text="Dispatched"/></Column>
+          <Column hAlign="End"><Text text="Returned"/></Column>
+          <Column hAlign="End"><Text text="Outstanding"/></Column>
+          <Column hAlign="End"><Text text="Presumed lost"/></Column>
+        </columns>
+        <items>
+          <ColumnListItem>
+            <cells>
+              <Text text="{customer/name}"/>
+              <Text text="{assetType/name}"/>
+              <ObjectNumber number="{dispatchedQty}"/>
+              <ObjectNumber number="{returnedQty}"/>
+              <ObjectNumber number="{outstandingQty}" state="Warning"/>
+              <ObjectNumber number="{presumedLostQty}" state="Error"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

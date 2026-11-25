@@ -1,0 +1,43 @@
+<mvc:View controllerName="rti.app.controller.Ledger" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Movement Ledger" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <Table id="t_ledger" growing="true" growingThreshold="50" sticky="ColumnHeaders,HeaderToolbar" noDataText="No movements"
+        items="{path:'/MovementLedger', parameters:{$orderby:'movementDate desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Movement ledger" level="H2"/>
+            <ToolbarSpacer/>
+            <Select id="typeFilter" change=".onFilter" width="14rem">
+              <core:Item xmlns:core="sap.ui.core" key="" text="All types"/>
+              <core:Item xmlns:core="sap.ui.core" key="DISPATCH" text="Dispatch"/>
+              <core:Item xmlns:core="sap.ui.core" key="RETURN_GOOD" text="Return (good)"/>
+              <core:Item xmlns:core="sap.ui.core" key="RETURN_DAMAGED" text="Return (damaged)"/>
+              <core:Item xmlns:core="sap.ui.core" key="RETURN_SCRAP" text="Return (scrap)"/>
+              <core:Item xmlns:core="sap.ui.core" key="PRESUMED_LOST" text="Presumed lost"/>
+              <core:Item xmlns:core="sap.ui.core" key="RECEIPT" text="Receipt"/>
+              <core:Item xmlns:core="sap.ui.core" key="REPAIR_IN" text="Repair in"/>
+              <core:Item xmlns:core="sap.ui.core" key="REPAIR_OUT" text="Repair out"/>
+              <core:Item xmlns:core="sap.ui.core" key="WRITE_OFF" text="Write off"/>
+              <core:Item xmlns:core="sap.ui.core" key="PURCHASE_RECEIPT" text="Purchase receipt"/>
+            </Select>
+            <SearchField id="search" width="14rem" placeholder="Reference / customer / serial" search=".onFilter" liveChange=".onFilter"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Date/time"/></Column><Column><Text text="Type"/></Column>
+          <Column><Text text="Asset type"/></Column><Column minScreenWidth="Tablet" demandPopin="true"><Text text="Serial"/></Column>
+          <Column><Text text="Warehouse"/></Column><Column><Text text="Customer"/></Column>
+          <Column hAlign="End"><Text text="Qty"/></Column><Column><Text text="Reference"/></Column>
+        </columns>
+        <items><ColumnListItem><cells>
+          <Text text="{movementDate}"/>
+          <ObjectStatus text="{path:'type', formatter:'.formatter.label'}"/>
+          <Text text="{assetType/name}"/><Text text="{asset/serialNo}"/>
+          <Text text="{warehouse/name}"/><Text text="{customer/name}"/>
+          <ObjectNumber number="{quantity}"/><Text text="{reference}"/>
+        </cells></ColumnListItem></items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

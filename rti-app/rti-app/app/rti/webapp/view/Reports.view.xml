@@ -1,0 +1,80 @@
+<mvc:View controllerName="rti.app.controller.Reports" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+  xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"
+  xmlns:viz="sap.viz.ui5.controls" xmlns:viz.data="sap.viz.ui5.data" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
+  <Page id="page" title="Reports &amp; Analytics" showNavButton="true" navButtonPress=".onNavBack">
+    <headerContent>
+      <Button icon="sap-icon://refresh" press=".onRefresh" tooltip="Recompute"/>
+    </headerContent>
+    <content>
+      <MessageStrip text="{view>/error}" type="Error" showIcon="true" visible="{= !!${view>/error}}"/>
+      <l:Grid defaultSpan="XL6 L6 M12 S12">
+        <Panel headerText="Inventory valuation (by asset type, INR)" class="rtiChartPanel">
+          <viz:VizFrame id="invChart" vizType="column" width="100%" height="300px" uiConfig="{applicationSet:'fiori'}" vizProperties="{title:{visible:false}}">
+            <viz:dataset>
+              <viz.data:FlattenedDataset data="{rep>/inventoryValuation}">
+                <viz.data:dimensions><viz.data:DimensionDefinition name="Asset type" value="{rep>label}"/></viz.data:dimensions>
+                <viz.data:measures><viz.data:MeasureDefinition name="Value" value="{rep>value}"/></viz.data:measures>
+              </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+              <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Value"/>
+              <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Asset type"/>
+            </viz:feeds>
+          </viz:VizFrame>
+        </Panel>
+        <Panel headerText="Customer exposure (net payable, INR)" class="rtiChartPanel">
+          <viz:VizFrame id="custChart" vizType="bar" width="100%" height="300px" uiConfig="{applicationSet:'fiori'}" vizProperties="{title:{visible:false}}">
+            <viz:dataset>
+              <viz.data:FlattenedDataset data="{rep>/customerExposure}">
+                <viz.data:dimensions><viz.data:DimensionDefinition name="Customer" value="{rep>label}"/></viz.data:dimensions>
+                <viz.data:measures><viz.data:MeasureDefinition name="Exposure" value="{rep>value}"/></viz.data:measures>
+              </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+              <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Exposure"/>
+              <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Customer"/>
+            </viz:feeds>
+          </viz:VizFrame>
+        </Panel>
+        <Panel headerText="Inspection result breakdown (units)" class="rtiChartPanel">
+          <viz:VizFrame id="condChart" vizType="donut" width="100%" height="300px" uiConfig="{applicationSet:'fiori'}" vizProperties="{title:{visible:false}}">
+            <viz:dataset>
+              <viz.data:FlattenedDataset data="{rep>/conditionBreakdown}">
+                <viz.data:dimensions><viz.data:DimensionDefinition name="Condition" value="{rep>label}"/></viz.data:dimensions>
+                <viz.data:measures><viz.data:MeasureDefinition name="Units" value="{rep>qty}"/></viz.data:measures>
+              </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+              <viz.feeds:FeedItem uid="size" type="Measure" values="Units"/>
+              <viz.feeds:FeedItem uid="color" type="Dimension" values="Condition"/>
+            </viz:feeds>
+          </viz:VizFrame>
+        </Panel>
+        <Panel headerText="Movement summary (units by type)" class="rtiChartPanel">
+          <viz:VizFrame id="movChart" vizType="column" width="100%" height="300px" uiConfig="{applicationSet:'fiori'}" vizProperties="{title:{visible:false}}">
+            <viz:dataset>
+              <viz.data:FlattenedDataset data="{rep>/movementSummary}">
+                <viz.data:dimensions><viz.data:DimensionDefinition name="Movement" value="{rep>label}"/></viz.data:dimensions>
+                <viz.data:measures><viz.data:MeasureDefinition name="Units" value="{rep>qty}"/></viz.data:measures>
+              </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+              <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Units"/>
+              <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Movement"/>
+            </viz:feeds>
+          </viz:VizFrame>
+        </Panel>
+      </l:Grid>
+      <Panel headerText="Top overdue dispatches" class="rtiChartPanel">
+        <Table items="{rep>/topOverdueDispatches}" noDataText="No overdue dispatches">
+          <columns><Column><Text text="Dispatch"/></Column><Column hAlign="End"><Text text="Outstanding units"/></Column><Column hAlign="End"><Text text="Net penalty (INR)"/></Column></columns>
+          <items><ColumnListItem><cells>
+            <ObjectIdentifier title="{rep>label}"/>
+            <ObjectNumber number="{rep>qty}" state="Warning"/>
+            <ObjectNumber number="{rep>value}" state="Error"/>
+          </cells></ColumnListItem></items>
+        </Table>
+      </Panel>
+    </content>
+  </Page>
+</mvc:View>

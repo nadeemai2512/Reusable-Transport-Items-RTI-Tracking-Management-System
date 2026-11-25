@@ -1,0 +1,5 @@
+ID,code,name,category,serialized,uom,purchaseValue,replacementValue,defaultGraceDays,active
+11111111-0000-0000-0000-000000000001,EURO-PAL,Euro Pallet,Pallet,false,EA,800,1200,30,true
+11111111-0000-0000-0000-000000000002,STL-CAGE,Steel Cage,Cage,true,EA,9000,12000,30,true
+11111111-0000-0000-0000-000000000003,IBC-TOTE,IBC Tote,Tote,true,EA,15000,20000,45,true
+11111111-0000-0000-0000-000000000004,PLS-CRATE,Plastic Crate,Crate,false,EA,300,450,30,true

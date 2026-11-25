@@ -1,0 +1,96 @@
+<mvc:View controllerName="rti.app.controller.MasterData" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core">
+  <Page id="page" title="Master Data" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <IconTabBar id="tabs" expandable="false" applyContentPadding="false" select=".onTabSelect">
+        <items>
+          <IconTabFilter key="Customers" text="Customers" icon="sap-icon://customer">
+            <Table id="t_Customers" growing="true" growingThreshold="30" noDataText="No customers"
+              items="{path:'/Customers', parameters:{$$updateGroupId:'rtiGroup', $orderby:'code'}}">
+              <headerToolbar><OverflowToolbar><Title text="Customers" level="H3"/><ToolbarSpacer/>
+                <Button icon="sap-icon://add" text="Add" type="Emphasized" press=".onAdd" visible="{me>/can/customers}"><customData><core:CustomData key="cfg" value="Customers"/></customData></Button>
+              </OverflowToolbar></headerToolbar>
+              <columns><Column><Text text="Code"/></Column><Column><Text text="Name"/></Column><Column><Text text="City"/></Column><Column><Text text="Country"/></Column><Column hAlign="End"><Text text="Grace days"/></Column><Column><Text text="Active"/></Column><Column width="7rem"><Text text=""/></Column></columns>
+              <items><ColumnListItem><cells>
+                <ObjectIdentifier title="{code}"/><Text text="{name}"/><Text text="{city}"/><Text text="{country}"/><ObjectNumber number="{defaultGraceDays}"/>
+                <Text text="{path:'active', formatter:'.formatter.yesNo'}"/>
+                <HBox visible="{me>/can/customers}"><Button icon="sap-icon://edit" type="Transparent" press=".onEdit"><customData><core:CustomData key="cfg" value="Customers"/></customData></Button>
+                  <Button icon="sap-icon://delete" type="Transparent" press=".onDelete"><customData><core:CustomData key="cfg" value="Customers"/></customData></Button></HBox>
+              </cells></ColumnListItem></items>
+            </Table>
+          </IconTabFilter>
+
+          <IconTabFilter key="AssetTypes" text="Asset types" icon="sap-icon://product">
+            <Table id="t_AssetTypes" growing="true" growingThreshold="30" noDataText="No asset types"
+              items="{path:'/AssetTypes', parameters:{$$updateGroupId:'rtiGroup', $orderby:'code'}}">
+              <headerToolbar><OverflowToolbar><Title text="Asset types" level="H3"/><ToolbarSpacer/>
+                <Button icon="sap-icon://add" text="Add" type="Emphasized" press=".onAdd" visible="{me>/can/master}"><customData><core:CustomData key="cfg" value="AssetTypes"/></customData></Button>
+              </OverflowToolbar></headerToolbar>
+              <columns><Column><Text text="Code"/></Column><Column><Text text="Name"/></Column><Column><Text text="Category"/></Column><Column><Text text="Serialized"/></Column><Column hAlign="End"><Text text="Purchase value"/></Column><Column hAlign="End"><Text text="Replacement value"/></Column><Column hAlign="End"><Text text="Grace days"/></Column><Column width="7rem"><Text text=""/></Column></columns>
+              <items><ColumnListItem><cells>
+                <ObjectIdentifier title="{code}"/><Text text="{name}"/><Text text="{category}"/><Text text="{path:'serialized', formatter:'.formatter.yesNo'}"/>
+                <ObjectNumber number="{purchaseValue}"/><ObjectNumber number="{replacementValue}"/><ObjectNumber number="{defaultGraceDays}"/>
+                <HBox visible="{me>/can/master}"><Button icon="sap-icon://edit" type="Transparent" press=".onEdit"><customData><core:CustomData key="cfg" value="AssetTypes"/></customData></Button>
+                  <Button icon="sap-icon://delete" type="Transparent" press=".onDelete"><customData><core:CustomData key="cfg" value="AssetTypes"/></customData></Button></HBox>
+              </cells></ColumnListItem></items>
+            </Table>
+          </IconTabFilter>
+
+          <IconTabFilter key="Warehouses" text="Warehouses" icon="sap-icon://building">
+            <Table id="t_Warehouses" noDataText="No warehouses" items="{path:'/Warehouses', parameters:{$$updateGroupId:'rtiGroup', $orderby:'code'}}">
+              <headerToolbar><OverflowToolbar><Title text="Warehouses" level="H3"/><ToolbarSpacer/>
+                <Button icon="sap-icon://add" text="Add" type="Emphasized" press=".onAdd" visible="{me>/can/master}"><customData><core:CustomData key="cfg" value="Warehouses"/></customData></Button>
+              </OverflowToolbar></headerToolbar>
+              <columns><Column><Text text="Code"/></Column><Column><Text text="Name"/></Column><Column><Text text="Plant"/></Column><Column><Text text="City"/></Column><Column width="7rem"><Text text=""/></Column></columns>
+              <items><ColumnListItem><cells>
+                <ObjectIdentifier title="{code}"/><Text text="{name}"/><Text text="{plant}"/><Text text="{city}"/>
+                <HBox visible="{me>/can/master}"><Button icon="sap-icon://edit" type="Transparent" press=".onEdit"><customData><core:CustomData key="cfg" value="Warehouses"/></customData></Button>
+                  <Button icon="sap-icon://delete" type="Transparent" press=".onDelete"><customData><core:CustomData key="cfg" value="Warehouses"/></customData></Button></HBox>
+              </cells></ColumnListItem></items>
+            </Table>
+          </IconTabFilter>
+
+          <IconTabFilter key="Assets" text="Serialized assets" icon="sap-icon://bar-code">
+            <Table id="t_Assets" growing="true" growingThreshold="30" noDataText="No serialized assets"
+              items="{path:'/Assets', parameters:{$$updateGroupId:'rtiGroup', $orderby:'serialNo'}}">
+              <headerToolbar><OverflowToolbar><Title text="Serialized assets" level="H3"/><ToolbarSpacer/>
+                <Button icon="sap-icon://add" text="Add" type="Emphasized" press=".onAdd" visible="{me>/can/assets}"><customData><core:CustomData key="cfg" value="Assets"/></customData></Button>
+              </OverflowToolbar></headerToolbar>
+              <columns><Column><Text text="Serial no."/></Column><Column><Text text="Asset type"/></Column><Column><Text text="QR code"/></Column><Column><Text text="Barcode"/></Column><Column><Text text="Status"/></Column><Column><Text text="Warehouse"/></Column><Column><Text text="Customer"/></Column><Column width="7rem"><Text text=""/></Column></columns>
+              <items><ColumnListItem><cells>
+                <ObjectIdentifier title="{serialNo}"/><Text text="{assetType/name}"/><Text text="{qrCode}"/><Text text="{barcode}"/>
+                <ObjectStatus text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+                <Text text="{currentWarehouse/name}"/><Text text="{currentCustomer/name}"/>
+                <HBox visible="{me>/can/assets}"><Button icon="sap-icon://edit" type="Transparent" press=".onEdit"><customData><core:CustomData key="cfg" value="Assets"/></customData></Button>
+                  <Button icon="sap-icon://delete" type="Transparent" press=".onDelete"><customData><core:CustomData key="cfg" value="Assets"/></customData></Button></HBox>
+              </cells></ColumnListItem></items>
+            </Table>
+          </IconTabFilter>
+
+          <IconTabFilter key="PenaltyPolicies" text="Penalty policies" icon="sap-icon://money-bills" visible="{me>/can/penalties}">
+            <Table id="t_PenaltyPolicies" noDataText="No penalty slabs" items="{path:'/PenaltyPolicies', suspended:true, parameters:{$$updateGroupId:'rtiGroup', $orderby:'fromDay'}}">
+              <headerToolbar><OverflowToolbar><Title text="Penalty slabs (rate per unit per day; customer / asset-type specific rows override generic ones)" level="H3"/><ToolbarSpacer/>
+                <Button icon="sap-icon://add" text="Add" type="Emphasized" press=".onAdd" visible="{me>/can/master}"><customData><core:CustomData key="cfg" value="PenaltyPolicies"/></customData></Button>
+              </OverflowToolbar></headerToolbar>
+              <columns><Column><Text text="Asset type"/></Column><Column><Text text="Customer"/></Column><Column hAlign="End"><Text text="From day"/></Column><Column hAlign="End"><Text text="To day"/></Column><Column hAlign="End"><Text text="Rate"/></Column><Column><Text text="Currency"/></Column><Column><Text text="Effective from"/></Column><Column width="7rem"><Text text=""/></Column></columns>
+              <items><ColumnListItem><cells>
+                <Text text="{assetType/name}"/><Text text="{customer/name}"/><ObjectNumber number="{fromDay}"/><ObjectNumber number="{toDay}"/><ObjectNumber number="{rate}"/><Text text="{currency}"/><Text text="{effectiveFrom}"/>
+                <HBox visible="{me>/can/master}"><Button icon="sap-icon://edit" type="Transparent" press=".onEdit"><customData><core:CustomData key="cfg" value="PenaltyPolicies"/></customData></Button>
+                  <Button icon="sap-icon://delete" type="Transparent" press=".onDelete"><customData><core:CustomData key="cfg" value="PenaltyPolicies"/></customData></Button></HBox>
+              </cells></ColumnListItem></items>
+            </Table>
+          </IconTabFilter>
+
+          <IconTabFilter key="Settings" text="Settings" icon="sap-icon://action-settings" visible="{me>/can/master}">
+            <Table id="t_Settings" noDataText="No settings" items="{path:'/Settings', suspended:true, parameters:{$$updateGroupId:'rtiGroup', $orderby:'code'}}">
+              <columns><Column><Text text="Setting"/></Column><Column><Text text="Value"/></Column><Column><Text text="Description"/></Column><Column width="4rem"><Text text=""/></Column></columns>
+              <items><ColumnListItem><cells>
+                <ObjectIdentifier title="{code}"/><Text text="{value}"/><Text text="{descr}"/>
+                <Button icon="sap-icon://edit" type="Transparent" press=".onEdit"><customData><core:CustomData key="cfg" value="Settings"/></customData></Button>
+              </cells></ColumnListItem></items>
+            </Table>
+          </IconTabFilter>
+        </items>
+      </IconTabBar>
+    </content>
+  </Page>
+</mvc:View>

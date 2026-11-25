@@ -1,0 +1,49 @@
+<mvc:View controllerName="rti.app.controller.Aging" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Asset Aging Management" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <MessageStrip showIcon="true" type="Information"
+        text="Outstanding dispatches grouped by age since dispatch. Overdue = grace period exceeded. Run the penalty engine on the Penalties page to refresh demurrage and presumed-lost flags."/>
+      <Table id="table" growing="true" growingThreshold="30" sticky="ColumnHeaders,HeaderToolbar" noDataText="No outstanding dispatches"
+        items="{path:'/Dispatches', parameters:{$orderby:'dispatchDate desc,dispatchNo desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Aging by dispatch" level="H2"/>
+            <ToolbarSpacer/>
+            <Select id="bucketFilter" change=".onFilter" width="16rem">
+              <core:Item xmlns:core="sap.ui.core" key="" text="All outstanding"/>
+              <core:Item xmlns:core="sap.ui.core" key="0-30" text="0-30 days"/>
+              <core:Item xmlns:core="sap.ui.core" key="31-60" text="31-60 days"/>
+              <core:Item xmlns:core="sap.ui.core" key="61+" text="61+ days"/>
+              <core:Item xmlns:core="sap.ui.core" key="overdue" text="Overdue (grace exceeded)"/>
+              <core:Item xmlns:core="sap.ui.core" key="presumed" text="Presumed lost"/>
+            </Select>
+            <SearchField id="search" width="14rem" placeholder="Dispatch no. / customer" search=".onFilter" liveChange=".onFilter"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Dispatch"/></Column>
+          <Column><Text text="Dispatched on"/></Column>
+          <Column><Text text="Customer"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Asset type"/></Column>
+          <Column hAlign="End"><Text text="Outstanding"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Grace ends"/></Column>
+          <Column><Text text="Status"/></Column>
+        </columns>
+        <items>
+          <ColumnListItem type="Navigation" press=".onOpen">
+            <cells>
+              <ObjectIdentifier title="{dispatchNo}"/>
+              <Text text="{dispatchDate}"/>
+              <Text text="{customer/name}"/>
+              <Text text="{assetType/name}"/>
+              <ObjectNumber number="{outstanding}" state="Warning"/>
+              <Text text="{graceEndDate}"/>
+              <ObjectStatus text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

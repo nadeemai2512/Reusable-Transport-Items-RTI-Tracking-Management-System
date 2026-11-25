@@ -1,0 +1,58 @@
+<mvc:View controllerName="rti.app.controller.Audit" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Audit Log" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <Table id="table" growing="true" growingThreshold="50" sticky="ColumnHeaders,HeaderToolbar" noDataText="No audit records"
+        items="{path:'/AuditLogs', parameters:{$orderby:'createdAt desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Audit trail" level="H2"/>
+            <ToolbarSpacer/>
+            <Select id="actionFilter" change=".onFilter" width="16rem">
+              <core:Item xmlns:core="sap.ui.core" key="" text="All actions"/>
+              <core:Item xmlns:core="sap.ui.core" key="DISPATCH" text="Dispatch"/>
+              <core:Item xmlns:core="sap.ui.core" key="RETURN" text="Return"/>
+              <core:Item xmlns:core="sap.ui.core" key="PRESUMED_LOST" text="Presumed lost"/>
+              <core:Item xmlns:core="sap.ui.core" key="PENALTY_ENGINE_RUN" text="Penalty engine run"/>
+              <core:Item xmlns:core="sap.ui.core" key="SCHEDULED_AGING_JOB" text="Scheduled aging job"/>
+              <core:Item xmlns:core="sap.ui.core" key="WAIVER_REQUEST" text="Waiver request"/>
+              <core:Item xmlns:core="sap.ui.core" key="WAIVER_APPROVED" text="Waiver approved"/>
+              <core:Item xmlns:core="sap.ui.core" key="WAIVER_REJECTED" text="Waiver rejected"/>
+              <core:Item xmlns:core="sap.ui.core" key="REPLENISHMENT_REQUEST" text="Replenishment request"/>
+              <core:Item xmlns:core="sap.ui.core" key="REPLENISHMENT_RECEIVED" text="Replenishment received"/>
+              <core:Item xmlns:core="sap.ui.core" key="REPAIR_CREATED" text="Repair created"/>
+              <core:Item xmlns:core="sap.ui.core" key="REPAIR_COMPLETED" text="Repair completed"/>
+              <core:Item xmlns:core="sap.ui.core" key="REPAIR_SCRAPPED" text="Repair scrapped"/>
+              <core:Item xmlns:core="sap.ui.core" key="PR_CREATED" text="Purchase requisition created"/>
+              <core:Item xmlns:core="sap.ui.core" key="PR_POSTED_S4" text="PR posted to S/4"/>
+              <core:Item xmlns:core="sap.ui.core" key="PR_POST_S4_FAILED" text="PR S/4 post failed"/>
+            </Select>
+            <SearchField id="search" width="14rem" placeholder="User / entity / reference" search=".onFilter" liveChange=".onFilter"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Time"/></Column>
+          <Column><Text text="User"/></Column>
+          <Column><Text text="Action"/></Column>
+          <Column><Text text="Entity"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Entity ID"/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="New value"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Comments"/></Column>
+        </columns>
+        <items>
+          <ColumnListItem>
+            <cells>
+              <Text text="{createdAt}"/>
+              <Text text="{userId}"/>
+              <ObjectStatus text="{path:'action', formatter:'.formatter.label'}"/>
+              <Text text="{entityType}"/>
+              <Text text="{entityId}"/>
+              <Text text="{newValue}" maxLines="2"/>
+              <Text text="{comments}" maxLines="2"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

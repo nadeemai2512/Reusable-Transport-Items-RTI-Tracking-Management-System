@@ -1,0 +1,4 @@
+ID,code,name,city,country,defaultGraceDays,active
+22222222-0000-0000-0000-000000000001,CUST-1001,Sunrise Retail Pvt Ltd,Hyderabad,India,,true
+22222222-0000-0000-0000-000000000002,CUST-1002,Coastal Foods Ltd,Chennai,India,20,true
+22222222-0000-0000-0000-000000000003,CUST-1003,Metro Chemicals,Mumbai,India,,true

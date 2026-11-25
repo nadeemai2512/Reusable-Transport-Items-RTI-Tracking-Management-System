@@ -1,0 +1,57 @@
+<mvc:View controllerName="rti.app.controller.Waivers" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core">
+  <Page id="page" title="Waiver Approvals" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <Table id="table" growing="true" growingThreshold="20" sticky="ColumnHeaders,HeaderToolbar" noDataText="No waiver requests"
+        items="{path:'/PenaltyWaiverRequests', parameters:{$orderby:'createdAt desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Waiver requests (INR)" level="H2"/>
+            <ToolbarSpacer/>
+            <Select id="statusFilter" change=".onFilter" width="12rem">
+              <core:Item key="" text="All"/><core:Item key="PENDING_APPROVAL" text="Pending approval"/>
+              <core:Item key="APPROVED" text="Approved"/><core:Item key="REJECTED" text="Rejected"/>
+            </Select>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Request"/></Column>
+          <Column><Text text="Customer"/></Column>
+          <Column hAlign="End"><Text text="Original penalty"/></Column>
+          <Column hAlign="End"><Text text="Requested"/></Column>
+          <Column hAlign="End"><Text text="%"/></Column>
+          <Column hAlign="End"><Text text="Remaining"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Reason"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Requested by"/></Column>
+          <Column><Text text="Status"/></Column>
+          <Column minScreenWidth="Desktop" demandPopin="true"><Text text="Decision"/></Column>
+          <Column width="11rem"><Text text=""/></Column>
+        </columns>
+        <items>
+          <ColumnListItem>
+            <cells>
+              <ObjectIdentifier title="{requestNo}" text="{comments}"/>
+              <Text text="{customer/name}"/>
+              <ObjectNumber number="{originalAmount}"/>
+              <ObjectNumber number="{requestedAmount}"/>
+              <ObjectNumber number="{percentage}"/>
+              <ObjectNumber number="{remainingAmount}"/>
+              <Text text="{reasonCode}"/>
+              <Text text="{createdBy}"/>
+              <ObjectStatus text="{path:'status', formatter:'.formatter.label'}" state="{path:'status', formatter:'.formatter.state'}"/>
+              <Text text="{decidedBy} {decisionDate} {decisionComment}"/>
+              <HBox visible="{= ${status} === 'PENDING_APPROVAL' &amp;&amp; ${me>/can/waiverDecide}}">
+                <Button icon="sap-icon://accept" type="Accept" tooltip="Approve" press=".onDecide" class="sapUiTinyMarginEnd">
+                  <customData><core:CustomData key="approve" value="true"/></customData>
+                </Button>
+                <Button icon="sap-icon://decline" type="Reject" tooltip="Reject" press=".onDecide">
+                  <customData><core:CustomData key="approve" value="false"/></customData>
+                </Button>
+              </HBox>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

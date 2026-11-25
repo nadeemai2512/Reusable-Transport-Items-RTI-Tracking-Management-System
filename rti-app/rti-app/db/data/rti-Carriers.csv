@@ -1,0 +1,4 @@
+ID,code,name,contact,active
+12121212-0000-0000-0000-000000000001,CARR-BD,BlueDart Logistics,ops@bluedart.example,true
+12121212-0000-0000-0000-000000000002,CARR-DT,DTDC Express,ops@dtdc.example,true
+12121212-0000-0000-0000-000000000003,CARR-FL,First Logistics,ops@firstlog.example,true

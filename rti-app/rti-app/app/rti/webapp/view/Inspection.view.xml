@@ -1,0 +1,45 @@
+<mvc:View controllerName="rti.app.controller.Inspection" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page id="page" title="Quality Inspection" showNavButton="true" navButtonPress=".onNavBack">
+    <content>
+      <MessageStrip showIcon="true" type="Information"
+        text="Inspection grade per return: GOOD (back to available stock), MINOR_DAMAGE (repair queue), SCRAP (written off). Damage rate over a rolling 90-day window is flagged on the dashboard when it exceeds the configured threshold."/>
+      <Table id="table" growing="true" growingThreshold="30" sticky="ColumnHeaders,HeaderToolbar" noDataText="No inspection records"
+        items="{path:'/InspectionSummary', parameters:{$orderby:'returnDate desc,returnNo desc'}}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Inspection records" level="H2"/>
+            <ToolbarSpacer/>
+            <Select id="condFilter" change=".onFilter" width="14rem">
+              <core:Item xmlns:core="sap.ui.core" key="" text="All conditions"/>
+              <core:Item xmlns:core="sap.ui.core" key="GOOD" text="Good"/>
+              <core:Item xmlns:core="sap.ui.core" key="MINOR_DAMAGE" text="Minor damage"/>
+              <core:Item xmlns="sap.ui.core" xmlns:core="sap.ui.core" key="SCRAP" text="Scrap"/>
+            </Select>
+            <SearchField id="search" width="14rem" placeholder="Return no. / customer" search=".onSearch" liveChange=".onSearch"/>
+            <Button icon="sap-icon://refresh" press=".onRefresh"/>
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column><Text text="Return"/></Column>
+          <Column><Text text="Date"/></Column>
+          <Column><Text text="Customer"/></Column>
+          <Column minScreenWidth="Tablet" demandPopin="true"><Text text="Asset type"/></Column>
+          <Column hAlign="End"><Text text="Qty"/></Column>
+          <Column><Text text="Inspection grade"/></Column>
+        </columns>
+        <items>
+          <ColumnListItem>
+            <cells>
+              <ObjectIdentifier title="{returnNo}"/>
+              <Text text="{returnDate}"/>
+              <Text text="{customer/name}"/>
+              <Text text="{assetType/name}"/>
+              <ObjectNumber number="{quantity}"/>
+              <ObjectStatus text="{path:'condition', formatter:'.formatter.label'}" state="{path:'condition', formatter:'.formatter.state'}"/>
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </content>
+  </Page>
+</mvc:View>

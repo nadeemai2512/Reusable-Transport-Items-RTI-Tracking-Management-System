@@ -1,0 +1,4 @@
+code,value,descr
+PRESUMED_LOST_DAYS,30,Overdue days after which outstanding assets are presumed lost
+WAIVER_THRESHOLD,10000,Waivers above this amount (INR) need Logistics Head approval
+DAMAGE_RATE_THRESHOLD,10,Customer damage-rate alert threshold in percent (rolling 90 days)
